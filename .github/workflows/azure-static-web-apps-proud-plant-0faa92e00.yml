@@ -20,7 +20,7 @@ jobs:
           submodules: true
           lfs: false
       - name: Install and Build
-        run: yarn & yarn build:public
+        run: yarn && yarn build:public
       - name: Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
