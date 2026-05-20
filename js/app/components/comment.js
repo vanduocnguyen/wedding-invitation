@@ -497,7 +497,7 @@ export const comment = (() => {
     const presence = Number(document.getElementById("form-presence").value);
     const message = document.getElementById("form-comment").value?.trim() ?? "";
     const btn = util.disableButton(button);
-    const status = await fetch("http://localhost:5189/wishes", {
+    const status = await fetch("https://wedding-webapi.azurewebsites.net/wishes", {
       method: HTTP_POST,
       headers: {
         "Content-Type": "application/json",
@@ -538,7 +538,7 @@ export const comment = (() => {
     </div>`;
 
     try {
-      const res = await fetch("http://localhost:5189/wishes");
+      const res = await fetch("https://wedding-webapi.azurewebsites.net/wishes");
       if (!res.ok) {
         throw new Error(res.statusText);
       }
