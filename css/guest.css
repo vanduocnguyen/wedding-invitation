@@ -1,0 +1,154 @@
+@import url("common.css");
+@import url("animation.css");
+
+html {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.with-scrollbar {
+    scrollbar-width: auto !important;
+    -ms-overflow-style: auto !important;
+}
+
+.font-corinthia {
+    font-family: 'Corinthia', cursive !important;
+}
+
+.img-center-crop {
+    width: 13rem;
+    height: 13rem;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+html[data-bs-theme="dark"] .btn-transparent {
+    background-color: rgba(var(--bs-dark-rgb), 0.5) !important;
+    backdrop-filter: blur(0.5rem);
+}
+
+html[data-bs-theme="light"] .btn-transparent {
+    background-color: rgba(var(--bs-light-rgb), 0.5) !important;
+    backdrop-filter: blur(0.5rem);
+}
+
+.loading-page {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1056;
+}
+
+html[data-bs-theme="light"] .color-theme-svg {
+    color: rgb(255, 255, 255);
+    background-color: var(--bs-light);
+}
+
+html[data-bs-theme="dark"] .color-theme-svg {
+    color: rgb(0, 0, 0);
+    background-color: var(--bs-dark);
+}
+
+html[data-bs-theme="light"] .bg-light-dark {
+    background-color: rgb(var(--bs-light-rgb));
+}
+
+html[data-bs-theme="dark"] .bg-light-dark {
+    background-color: rgb(var(--bs-dark-rgb));
+}
+
+html[data-bs-theme="light"] .bg-white-black {
+    background-color: rgb(var(--bs-white-rgb));
+}
+
+html[data-bs-theme="dark"] .bg-white-black {
+    background-color: rgb(var(--bs-black-rgb));
+}
+
+.bg-cover-home {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mask-image: linear-gradient(0.5turn, transparent, black 40%, black 60%, transparent);
+}
+
+.width-loading {
+    width: 25%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 992px) {
+    .width-loading {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .width-loading {
+        width: 75%;
+    }
+}
+
+svg {
+    display: block;
+    line-height: 0;
+    shape-rendering: geometricPrecision;
+    backface-visibility: hidden;
+}
+
+.svg-wrapper {
+    overflow: hidden !important;
+    transform: translateZ(0) !important;
+}
+
+.no-gap-bottom {
+    margin-bottom: -0.75rem !important;
+}
+
+.text-wedding {
+    color: #c2456e !important;
+}
+
+.btn-wedding {
+    background: linear-gradient(135deg, #e8627a 0%, #c2456e 50%, #9b3060 100%);
+    color: #fff !important;
+    border: none;
+    letter-spacing: 0.06em;
+    font-size: 0.9rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    box-shadow: 0 4px 15px rgba(194, 69, 110, 0.45) !important;
+}
+
+.btn-wedding:hover,
+.btn-wedding:focus {
+    color: #fff !important;
+    filter: brightness(1.1);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 7px 22px rgba(194, 69, 110, 0.55) !important;
+}
+
+.btn-wedding:active {
+    transform: translateY(0) scale(0.98);
+    filter: brightness(0.95);
+}
+
+.btn-wedding .heart-left,
+.btn-wedding .heart-right {
+    display: inline-block;
+    font-size: 0.7rem;
+    opacity: 0.85;
+    transition: transform 0.3s ease;
+}
+
+.btn-wedding:hover .heart-left {
+    transform: rotate(-20deg) scale(1.25);
+}
+
+.btn-wedding:hover .heart-right {
+    transform: rotate(20deg) scale(1.25);
+}
