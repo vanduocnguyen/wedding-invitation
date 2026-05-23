@@ -558,7 +558,7 @@ export const comment = (() => {
         <div class="col">
           <div class="h-100 p-2 rounded-4 shadow-sm" style="background:rgba(255,255,255,0.6);">
             <div class="d-flex align-items-center gap-1 mb-1">
-              <span class="fw-semibold">${util.escapeHtml(w.name ?? "")}</span>
+              <span>${util.escapeHtml(w.name ?? "")}</span>
             </div>
             ${w.message ? `<p class="mb-1">${util.escapeHtml(w.message)}</p>` : ""}
           </div>

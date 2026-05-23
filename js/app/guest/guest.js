@@ -61,12 +61,7 @@ export const guest = (() => {
      * @returns {void}
      */
     const showGuestName = () => {
-        /**
-         * Make sure "to=" is the last query string.
-         * Ex. ulems.my.id/?id=some-uuid-here&to=name
-         */
-        const raw = window.location.search.split('to=');
-        let name = null;
+        const name = new URLSearchParams(window.location.search).get('to') ?? null;
 
         const displayGuestName = (name) => {
             if (!name) {
@@ -87,15 +82,11 @@ export const guest = (() => {
             const div = document.createElement('div');
             div.classList.add('m-2');
 
-            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(guestName?.getAttribute('data-message'))}</small><p class="m-0 p-0 font-corinthia" style="font-size: 2.25rem">${util.escapeHtml(name ?? 'Quý khách')}</p>`;
+            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(guestName?.getAttribute('data-message'))}</small><p class="m-0 p-0 font-corinthia text-wedding" style="font-size: 2.25rem">${util.escapeHtml(name ?? 'Quý khách')}</p>`;
             util.safeInnerHTML(div, template);
 
             guestName?.appendChild(div);
         };
-
-        if (raw.length > 1 && raw[1].length >= 1) {
-            name = window.decodeURIComponent(raw[1]);
-        }
 
         displayGuestName(name);
         displayGuestName2(name);
