@@ -181,3 +181,15 @@ html[data-bs-theme="light"] footer {
 html[data-bs-theme="light"] .nav-link {
     color: #c2456e !important;
 }
+
+html[data-bs-theme="light"] .wave-divider path,
+html[data-bs-theme="light"] .wave-top path,
+html[data-bs-theme="light"] .wave-bottom path {
+    fill: #fff0f3 !important;
+}
+
+html[data-bs-theme="light"] svg path[fill="white"],
+html[data-bs-theme="light"] svg path[fill="#ffffff"],
+html[data-bs-theme="light"] svg path[fill="#fff"] {
+    fill: #fff0f3 !important;
+}
