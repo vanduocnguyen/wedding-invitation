@@ -497,31 +497,25 @@ export const comment = (() => {
     const presence = Number(document.getElementById("form-presence").value);
     const message = document.getElementById("form-comment").value?.trim() ?? "";
     const btn = util.disableButton(button);
-    const status = await fetch("https://wedding-webapi.azurewebsites.net/wishes", {
+    await fetch("https://script.google.com/macros/s/AKfycbzKcP-yHMbhZbybfZvWuXOliqbkPM-YCH287YhsNGwhOx12QJphZKusEk9fmMgyGd0/exec", {
       method: HTTP_POST,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      mode: "no-cors",
       body: JSON.stringify({
         name: name,
-        presence: presence,
-        message: message
+        attendance: String(presence),
+        comment: message
       }),
     });
 
     btn.restore();
-
     const errorEl = document.getElementById("wish-error");
     const successEl = document.getElementById("wish-success");
-
-    if (status.status !== HTTP_STATUS_CREATED) {
-      errorEl?.classList.remove("d-none");
-      successEl?.classList.add("d-none");
-      return;
-    }
-
     errorEl?.classList.add("d-none");
     successEl?.classList.remove("d-none");
+    document.getElementById("form-name").value = "";
+    document.getElementById("form-comment").value = "";
+    return;
+
   };
 
   /**
@@ -538,14 +532,12 @@ export const comment = (() => {
     </div>`;
 
     try {
-      const res = await fetch("https://wedding-webapi.azurewebsites.net/wishes");
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzKcP-yHMbhZbybfZvWuXOliqbkPM-YCH287YhsNGwhOx12QJphZKusEk9fmMgyGd0/exec");
       if (!res.ok) {
         throw new Error(res.statusText);
       }
       const data = await res.json();
-      const items = Array.isArray(data)
-        ? data
-        : (data.data ?? data.lists ?? []);
+      const items = data.data ?? [];
 
       if (items.length === 0) {
         container.innerHTML = `<p class="text-center" style="padding-top: 10rem;">Chúc mình mong nhận được lời chúc từ Quý khách ❤️</p>`;
@@ -560,7 +552,7 @@ export const comment = (() => {
             <div class="d-flex align-items-center gap-1 mb-1">
               <span>${util.escapeHtml(w.name ?? "")}</span>
             </div>
-            ${w.message ? `<p class="mb-1">${util.escapeHtml(w.message)}</p>` : ""}
+            ${w.comment ? `<p class="mb-1">${util.escapeHtml(w.comment)}</p>` : ""}
           </div>
         </div>`,
         )
