@@ -42,8 +42,8 @@ html[data-bs-theme="light"] .btn-transparent {
 }
 
 html[data-bs-theme="light"] .color-theme-svg {
-    color: #ffd6e0;
-    background-color: #fff0f3;
+    color: #fff0f3;
+    background-color: #ffd6e0;
 }
 
 html[data-bs-theme="dark"] .color-theme-svg {
