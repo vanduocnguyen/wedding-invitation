@@ -71,73 +71,50 @@ export const pool = (() => {
  * @param {string} cacheName 
  */
 export const cacheWrapper = (cacheName) => {
-    const cacheObject = pool.getInstance(cacheName);
+    let cacheObject = null;
+    try {
+        cacheObject = pool.getInstance(cacheName);
+    } catch (e) {
+        cacheObject = null;
+    }
 
-    /**
-     * @param {string|URL} input 
-     * @param {Response} res 
-     * @param {boolean} forceCache
-     * @param {number} ttl
-     * @returns {Promise<Response>}
-     */
-    const set = (input, res, forceCache, ttl) => res.clone().arrayBuffer().then((ab) => {
-        if (!res.ok) {
-            return res;
-        }
-
-        const now = new Date();
-        const headers = new Headers(res.headers);
-
-        if (!headers.has('Date')) {
-            headers.set('Date', now.toUTCString());
-        }
-
-        if (forceCache || !headers.has('Cache-Control')) {
-            if (!forceCache && headers.has('Expires')) {
-                const expTime = new Date(headers.get('Expires'));
-                ttl = Math.max(0, expTime.getTime() - now.getTime());
+    const set = (input, res, forceCache, ttl) => {
+        if (!cacheObject) return Promise.resolve(res);
+        return res.clone().arrayBuffer().then((ab) => {
+            if (!res.ok) return res;
+            const now = new Date();
+            const headers = new Headers(res.headers);
+            if (!headers.has('Date')) headers.set('Date', now.toUTCString());
+            if (forceCache || !headers.has('Cache-Control')) {
+                if (!forceCache && headers.has('Expires')) {
+                    const expTime = new Date(headers.get('Expires'));
+                    ttl = Math.max(0, expTime.getTime() - now.getTime());
+                }
+                if (ttl === 0) throw new Error('Cache max age cannot be 0');
+                headers.set('Cache-Control', `public, max-age=${Math.floor(ttl / 1000)}`);
             }
-
-            if (ttl === 0) {
-                throw new Error('Cache max age cannot be 0');
-            }
-
-            headers.set('Cache-Control', `public, max-age=${Math.floor(ttl / 1000)}`);
-        }
-
-        if (!headers.has('Content-Length')) {
-            headers.set('Content-Length', String(ab.byteLength));
-        }
-
-        return cacheObject.put(input, new Response(ab, { headers })).then(() => res);
-    });
-
-    /**
-     * @param {string|URL} input 
-     * @returns {Promise<Response|null>}
-     */
-    const has = (input) => cacheObject.match(input).then((res) => {
-        if (!res) {
-            return null;
-        }
-
-        const maxAge = res.headers.get('Cache-Control').match(/max-age=(\d+)/)[1];
-        const expTime = Date.parse(res.headers.get('Date')) + (parseInt(maxAge) * 1000);
-
-        return Date.now() > expTime ? null : res;
-    });
-
-    /**
-     * @param {string|URL} input 
-     * @returns {Promise<boolean>}
-     */
-    const del = (input) => cacheObject.delete(input);
-
-    return {
-        set,
-        has,
-        del,
+            if (!headers.has('Content-Length')) headers.set('Content-Length', String(ab.byteLength));
+            return cacheObject.put(input, new Response(ab, { headers })).then(() => res);
+        });
     };
+
+    const has = (input) => {
+        if (!cacheObject) return Promise.resolve(null);
+        return cacheObject.match(input).then((res) => {
+            if (!res) return null;
+            const maxAge = res.headers.get('Cache-Control')?.match(/max-age=(\d+)/)?.[1];
+            if (!maxAge) return null;
+            const expTime = Date.parse(res.headers.get('Date')) + (parseInt(maxAge) * 1000);
+            return Date.now() > expTime ? null : res;
+        });
+    };
+
+    const del = (input) => {
+        if (!cacheObject) return Promise.resolve(false);
+        return cacheObject.delete(input);
+    };
+
+    return { set, has, del };
 };
 
 /**
