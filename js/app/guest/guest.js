@@ -317,6 +317,14 @@ export const guest = (() => {
 
         window.addEventListener('resize', util.debounce(slide));
         document.addEventListener('undangan.progress.done', () => booting());
+
+        // Timeout tổng: nếu sau 3 giây chưa xong thì tự động vào luôn
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                booting();
+            }
+        }, 3000);
         document.addEventListener('hide.bs.modal', () => document.activeElement?.blur());
         document.getElementById('button-modal-download').addEventListener('click', (e) => {
             img.download(e.currentTarget.getAttribute('data-src'));
