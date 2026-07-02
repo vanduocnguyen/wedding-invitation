@@ -316,15 +316,15 @@ export const guest = (() => {
         const params = new URLSearchParams(window.location.search);
 
         window.addEventListener('resize', util.debounce(slide));
-        document.addEventListener('undangan.progress.done', () => booting());
+        let booted = false;
+                const safeBoot = () => {
+                    if (booted) return;
+                    booted = true;
+                    booting();
+                };
 
-        // Timeout tổng: nếu sau 3 giây chưa xong thì tự động vào luôn
-        setTimeout(() => {
-            const loading = document.getElementById('loading');
-            if (loading) {
-                booting();
-            }
-        }, 3000);
+                document.addEventListener('undangan.progress.done', () => safeBoot());
+                setTimeout(() => safeBoot(), 3000);
         document.addEventListener('hide.bs.modal', () => document.activeElement?.blur());
         document.getElementById('button-modal-download').addEventListener('click', (e) => {
             img.download(e.currentTarget.getAttribute('data-src'));
