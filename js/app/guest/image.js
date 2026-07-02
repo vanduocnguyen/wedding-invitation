@@ -64,34 +64,37 @@ export const image = (() => {
     const getByDefault = (el) => {
         let counted = false;
 
-        el.onerror = () => {
-            if (counted) return;
-            counted = true;
-            progress.invalid('image');
-        };
-        el.onload = () => {
+        const markComplete = () => {
             if (counted) return;
             counted = true;
             progress.complete('image');
         };
 
-        if (el.complete && el.naturalWidth !== 0 && el.naturalHeight !== 0) {
+        const markInvalid = () => {
+            if (counted) return;
             counted = true;
-            progress.complete('image');
+            progress.invalid('image');
+        };
+
+        // Timeout 8 giây — nếu Zalo treo thì tự thoát
+        const timer = setTimeout(markComplete, 8000);
+
+        el.onerror = () => { clearTimeout(timer); markInvalid(); };
+        el.onload = () => { clearTimeout(timer); markComplete(); };
+
+        if (el.complete && el.naturalWidth !== 0 && el.naturalHeight !== 0) {
+            clearTimeout(timer);
+            markComplete();
         } else if (el.complete) {
-            // iOS Safari can set complete=true with naturalWidth=0 while still decoding.
-            // Use decode() to distinguish a true load failure from a pending decode.
-            el.decode()
-                .then(() => {
-                    if (counted) return;
-                    counted = true;
-                    progress.complete('image');
-                })
-                .catch(() => {
-                    if (counted) return;
-                    counted = true;
-                    progress.invalid('image');
-                });
+            if (el.decode) {
+                el.decode()
+                    .then(() => { clearTimeout(timer); markComplete(); })
+                    .catch(() => { clearTimeout(timer); markInvalid(); });
+            } else {
+                // Zalo không có decode() — thoát luôn
+                clearTimeout(timer);
+                markComplete();
+            }
         }
     };
 
