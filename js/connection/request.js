@@ -53,8 +53,12 @@ export const pool = (() => {
          * @returns {void}
          */
         init: (callback, lists = []) => {
-            if (!window.isSecureContext) {
-                throw new Error('this application required secure context');
+            if (!window.isSecureContext || !window.caches) {
+                // Zalo WebView hoặc môi trường không hỗ trợ Cache API
+                cachePool = new Map();
+                lists.concat([cacheRequest]).forEach((v) => cachePool.set(v, null));
+                callback();
+                return;
             }
 
             cachePool = new Map();
